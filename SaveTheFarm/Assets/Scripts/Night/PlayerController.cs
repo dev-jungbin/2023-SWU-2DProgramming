@@ -1,20 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    Vector3 moveY = new Vector3(0, 3, 0);
-    Vector3 moveX = new Vector3(4, 0, 0);
+    Vector3 moveY;
+    Vector3 moveX;
     Animator animator;
     public GameObject missile;
     int bulletCount = 0;
-    int maxBulletCount = 5;
+    int maxBulletCount = 7;
+    int hp = 100;
     private GameObject[] bullets;
+    GameManager gameManager;
+    // HP bar Image를 저장하기 위한 변수
+    public Image hpBar;
+    // 생명 게이지 초기 색상, 현재 색상 변수
+    Color initColor = Color.green;
+    Color currColor;
 
     void Start()
     {
+        // 게임 매니저 컴포넌트 호출
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         this.animator = GetComponent<Animator>(); // 애니메이터 컴포넌트 지정
+        moveX = new Vector3(gameManager.speed * 3, 0, 0); 
+        moveY = new Vector3(0, gameManager.speed * 3, 0);
+
+        // 생명 게이지 초기 색상 설정
+        hpBar.color = initColor;
+        currColor = initColor;
     }
 
     void Update()
@@ -87,4 +104,39 @@ public class PlayerController : MonoBehaviour
 
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // 만약 적과 충돌한다면
+        if (collision.tag == "Enemy")
+        {
+            // hp가 남아있다면
+            if (hp > 2)
+            {
+                // 적의 파워 3 * 현재 레벨만큼 hp 감소
+                hp -= 3 * gameManager.currentLevel;
+                // HpBar 업데이트
+                DisplayHpBar();
+            }
+            else // hp가 남아있지 않다면
+            {
+                // 게임 오버
+                gameManager.GameOver();
+            }
+        }
     }
+
+    private void DisplayHpBar()
+    {
+        float ratio = hp / 100.0f;
+        // 생명 수치가 50%일 때까지는 녹색에서 노란색으로 변경
+        if (ratio > 0.5f)
+            currColor.r = (1 - ratio) * 2.0f;
+        else // 생명 수치가 0%일 때까지는 노란색에서 빨간색으로 변경
+            currColor.g = ratio * 2.0f;
+        // HP bar의 색상 변경
+        hpBar.color = currColor;
+        // HP bar의 크기 변경
+        hpBar.fillAmount = ratio;
+    }
+}

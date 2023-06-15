@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f5725c2ea28804648a8193e512800d2c
+guid: b1b0e00c1193c49c98e6d0f41b94616a
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - ROKAF Sans
+  - NeoDunggeunmo Pro
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
